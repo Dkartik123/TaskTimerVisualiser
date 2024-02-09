@@ -3,18 +3,21 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class WorkTimer {
+    private String dateString;
     private Timer timer;
     private long startTime;
     private long elapsedTime;
     private boolean running;
     private TimerWindow timerWindow; // Ссылка на объект TimerWindow
-
-    public WorkTimer(TimerWindow timerWindow) {
+    public WorkTimer(TimerWindow timerWindow, String dateString) {
         this.timerWindow = timerWindow;
+        this.dateString = dateString;
         startTime = 0;
         elapsedTime = 0;
         running = false;
+        loadTimeDataOnStartup();
     }
+        
 
     public void startTimer() {
         if (!running) {
@@ -25,13 +28,13 @@ public class WorkTimer {
                 public void run() {
                     elapsedTime = System.currentTimeMillis() - startTime;
                     // Форматируем время и обновляем метку времени в TimerWindow
-                    timerWindow.updateTimerLabel(formatTime(elapsedTime));
+                    timerWindow.updateTimerLabel(dateString, formatTime(elapsedTime));
                 }
             }, 0, 1000); // Обновление каждую секунду
             running = true;
         }
     }
-
+    
     public void stopTimer() {
         if (timer != null) {
             timer.cancel();
